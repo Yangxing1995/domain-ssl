@@ -1,0 +1,50 @@
+<!-- index.html (updated) -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Checker</title>
+</head>
+<body>
+<div id="app">
+    <h1>Domain Checker</h1>
+    <input v-model="domain" placeholder="Enter domain">
+    <input v-model="token" placeholder="Enter token">
+    <button @click="checkDomain">Check</button>
+    <pre v-if="result">{{ result }}</pre>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            domain: '',
+            token: '',
+            result: ''
+        },
+        methods: {
+            checkDomain() {
+                fetch('/check', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `domain=${encodeURIComponent(this.domain)}&token=${encodeURIComponent(this.token)}`
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        this.result = data;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        this.result = 'Error occurred.';
+                    });
+            }
+        }
+    });
+</script>
+</body>
+</html>
